@@ -35,9 +35,7 @@ def register(request):
         username=username,
         email=email,
         password=encrypted_password,
-        # role="citizen"   # 🔒 citizen only
-        role="admin",
-        is_super_admin=True
+        role="citizen"   # 🔒 citizen only
     )
 
     return JsonResponse({
