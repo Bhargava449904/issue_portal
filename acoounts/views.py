@@ -36,7 +36,7 @@ def register(request):
         email=email,
         password=encrypted_password,
         # role="citizen"   # 🔒 citizen only
-        role="admin" 
+        role="admin",
         is_super_admin=True
     )
 
