@@ -79,9 +79,9 @@ def login(request):
             )
             return response
         else:
-            return HttpResponse("invalid credentials")
+            return JsonResponse("invalid credentials")
     except:
-        return HttpResponse("user not available")
+        return JsonResponse("user not available")
     
     
 
