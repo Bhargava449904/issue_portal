@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+from corsheaders.defaults import default_headers
+from corsheaders.defaults import default_methods
+
 
 from pathlib import Path
 import environ
@@ -29,7 +32,9 @@ SECRET_KEY = 'django-insecure-ucy=xj=n3^n92mhy_9-o64aem@9t!=b5%l7iaky15p7!%lw*yi
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "issue-portal-b46v.onrender.com"
+    "issue-portal-b46v.onrender.com",
+    "localhost",
+    "127.0.0.1",
 ]
 
 
@@ -60,28 +65,30 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://community-portal-fullstack.vercel.app"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_HEADERS = [
-    "content-type",
+CORS_ALLOW_HEADERS = list(default_headers) + [
     "authorization",
 ]
 
+
+CORS_ALLOW_METHODS = list(default_methods)
+
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
     "https://community-portal-fullstack.vercel.app",
     "https://issue-portal-b46v.onrender.com",
 
 ]
-
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+if DEBUG:
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
 
 CSRF_COOKIE_SAMESITE = "None"
 SESSION_COOKIE_SAMESITE = "None"
@@ -170,7 +177,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_FILE_STORANGE='cloudinary.storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE='cloudinary.storage.storage.MediaCloudinaryStorage'
 CLOUDINARY_STORAGE={
     'CLOUD_NAME':env("CLOUDINARY_CLOUD_NAME"),
     'API_KEY':env("CLOUDINARY_API_KEY"),
