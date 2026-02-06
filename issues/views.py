@@ -207,8 +207,11 @@ def admin_delete_issue(request, issue_id):
 
     # Authenticate admin
     user = get_user_from_token(request)
-    if user["role"] == "admin" and user["is_super_admin"]:
-        return JsonResponse({"error": "Admin only"}, status=403)
+    if not user or (
+    user.get("role") != "admin"
+    and not user.get("is_super_admin")
+    ):
+     return JsonResponse({"error": "Admin only"}, status=403)
 
     #  Get issue
     try:
