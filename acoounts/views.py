@@ -107,7 +107,7 @@ def super_admin_create_admin(request):
     # SUPER ADMIN check (IMPORTANT)
     if not user or (
     user.get("role") != "admin"
-    and not user.get("is_super_admin")
+    or not user.get("is_super_admin")
     ):
         return JsonResponse({"error": "Super Admin only"}, status=403)
 
@@ -160,7 +160,7 @@ def super_admin_view_admins(request):
     # Super admin check
     if not user or (
     user.get("role") != "admin"
-    and not user.get("is_super_admin")
+    or not user.get("is_super_admin")
     ):
         return JsonResponse({"error": "Super Admin only"}, status=403)
 
@@ -196,7 +196,7 @@ def super_admin_delete_admin(request, admin_id):
     # Super admin check
     if not user or (
     user.get("role") != "admin"
-    and not user.get("is_super_admin")
+    or not user.get("is_super_admin")
     ):
         return JsonResponse({"error": "Super Admin only"}, status=403)
 
