@@ -95,20 +95,23 @@ def login(request):
 
 @csrf_exempt
 def super_admin_create_admin(request):
-    # 1️⃣ Allow only POST
+    #  Allow only POST
     if request.method != "POST":
         return JsonResponse({"error": "POST method required"}, status=405)
 
-    # 2️⃣ Authenticate user
+    # Authenticate user
     user = get_user_from_token(request)
     if not user:
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
-    # 3️⃣ SUPER ADMIN check (IMPORTANT)
-    if user["role"] != "admin" or not user["is_super_admin"]:
-        return JsonResponse({"error": "Super admin only"}, status=403)
+    # SUPER ADMIN check (IMPORTANT)
+    if not user or (
+    user.get("role") != "admin"
+    and not user.get("is_super_admin")
+    ):
+        return JsonResponse({"error": "Super Admin only"}, status=403)
 
-    # 4️⃣ Get data
+    #  Get data
     username = request.POST.get("username")
     email = request.POST.get("email")
     password = request.POST.get("password")
@@ -116,17 +119,17 @@ def super_admin_create_admin(request):
     if not username or not email or not password:
         return JsonResponse({"error": "All fields are required"}, status=400)
 
-    # 5️⃣ Check existing email
+    # Check existing email
     if User.objects.filter(email=email).exists():
         return JsonResponse({"error": "Email already exists"}, status=400)
 
-    # 6️⃣ Hash password
+    # Hash password
     hashed_password = bcrypt.hashpw(
         password.encode("utf-8"),
         bcrypt.gensalt()
     ).decode("utf-8")
 
-    # 7️⃣ Create NORMAL admin
+    # Create NORMAL admin
     User.objects.create(
         username=username,
         email=email,
@@ -135,7 +138,7 @@ def super_admin_create_admin(request):
         is_super_admin=False   # ⭐ normal admin
     )
 
-    # 8️⃣ Success response
+    # Success response
     return JsonResponse(
         {"message": "Normal admin created successfully"},
         status=201
@@ -155,8 +158,11 @@ def super_admin_view_admins(request):
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # Super admin check
-    if user["role"] != "admin" or not user["is_super_admin"]:
-        return JsonResponse({"error": "Super admin only"}, status=403)
+    if not user or (
+    user.get("role") != "admin"
+    and not user.get("is_super_admin")
+    ):
+        return JsonResponse({"error": "Super Admin only"}, status=403)
 
     # Fetch ONLY normal admins
     admins = User.objects.filter(
@@ -188,8 +194,11 @@ def super_admin_delete_admin(request, admin_id):
         return JsonResponse({"error": "Unauthorized"}, status=401)
 
     # Super admin check
-    if user["role"] != "admin" or not user["is_super_admin"]:
-        return JsonResponse({"error": "Super admin only"}, status=403)
+    if not user or (
+    user.get("role") != "admin"
+    and not user.get("is_super_admin")
+    ):
+        return JsonResponse({"error": "Super Admin only"}, status=403)
 
     # Prevent self delete
     if user["user_id"] == admin_id:

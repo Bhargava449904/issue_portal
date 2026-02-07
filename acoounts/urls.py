@@ -7,5 +7,5 @@ urlpatterns=[
     path("login/",view=views.login),
     path("super_admin_create_admin/",view=views.super_admin_create_admin),
     path("super_admin_view_admins/",view=views.super_admin_view_admins),
-    path("super_admin_delete_admin/",view=views.super_admin_delete_admin),
+    path("super_admin_delete_admin/<int:admin_id>/",view=views.super_admin_delete_admin),
 ]

@@ -54,19 +54,19 @@ def create_issue(request):
 
 @csrf_exempt
 def view_my_issues(request):
-    # 1️⃣ Allow only GET
+    #  Allow only GET
     if request.method != "GET":
         return JsonResponse({"error": "GET method required"}, status=405)
 
-    # 2️⃣ Authenticate user
+    # Authenticate user
     user = get_user_from_token(request)
     if not user or user["role"] != "citizen":
         return JsonResponse({"error": "Citizen only"}, status=403)
 
-    # 3️⃣ Fetch only logged-in citizen issues
+    #  Fetch only logged-in citizen issues
     issues = Issue.objects.filter(created_by_id=user["user_id"]).order_by("-created_at")
 
-    # 4️⃣ Convert queryset to JSON
+    #  Convert queryset to JSON
     issues_data = []
     for issue in issues:
         issues_data.append({
@@ -79,7 +79,7 @@ def view_my_issues(request):
             "created_at": issue.created_at
         })
 
-    # 5️⃣ Return response
+    #  Return response
     return JsonResponse(
         {"issues": issues_data},
         status=200
@@ -92,19 +92,19 @@ def view_my_issues(request):
 
 @csrf_exempt
 def admin_view_all_issues(request):
-    # 1️⃣ Allow only GET
+    # Allow only GET
     if request.method != "GET":
         return JsonResponse({"error": "GET method required"}, status=405)
 
-    # 2️⃣ Authenticate user
+    #  Authenticate user
     user = get_user_from_token(request)
     if not user or user["role"] != "admin":
         return JsonResponse({"error": "Admin only"}, status=403)
 
-    # 3️⃣ Fetch all issues
+    #  Fetch all issues
     issues = Issue.objects.select_related("created_by").order_by("-created_at")
 
-    # 4️⃣ Convert queryset to JSON
+    # Convert queryset to JSON
     issues_data = []
     for issue in issues:
         issues_data.append({
@@ -124,7 +124,7 @@ def admin_view_all_issues(request):
             }
         })
 
-    # 5️⃣ Return response
+    # Return response
     return JsonResponse(
         {"issues": issues_data},
         status=200
@@ -222,7 +222,7 @@ def admin_delete_issue(request, issue_id):
     # Delete issue
     issue.delete()
 
-    # 5️⃣ Success response
+    #  Success response
     return JsonResponse(
         {"message": "Issue deleted successfully"},
         status=200
